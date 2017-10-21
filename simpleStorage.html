@@ -50,15 +50,15 @@
 
 		if(typeof web3 !== 'undefined'){
 			//use mist/metamask provider
-			window.Web3 = new Web3(Web3.currentProvider);
+			window.web3 = new Web3(Web3.currentProvider);
 
 		}else{
 
 			console.log('no web3? you should consider trying metamask!')
 
-			window.Web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-			console.log('window.web3 connecct successfully!!');
+			console.log('window.web3 connect successfully!!');
 		}
 
 		startApp();
@@ -67,14 +67,18 @@
 
 	function startApp(){
 
-		simpleStorageContract = Web3.eth.contract(abi);
+		simpleStorageContract = web3.eth.contract(abi);
 		simpleStorage = simpleStorageContract.at(contract_address);
 
 		document.getElementById('contract_addr').innerHTML = getLink(contract_address);
 
-		Web3.eth.getAccounts(function(e,r){
+		web3.eth.getAccounts(function(e,r){
 
-			document.getElementById('account_addr').innerHTML = getLink(r[0]);
+			if(r != null){
+				document.getElementById('account_addr').innerHTML = getLink(r[0]);	
+			}else{
+				document.getElementById('account_addr').innerHTML = 'account is null';	
+			}
 		});
 
 		getValue();
@@ -94,7 +98,7 @@
 
 		});
 
-		Web3.eth.getBlockNumber(function(e,r){
+		web3.eth.getBlockNumber(function(e,r){
 
 			document.getElementById('lastBlock').innerHTML = r;
 
@@ -113,13 +117,13 @@
 			txid = r;
 		});
 
-		var filter = Web3.eth.filter('lastest');
+		var filter = web3.eth.filter('lastest');
 
 		filter.watch(function(e,r){
 
 			getValue();
 
-			Web3.eth.getTransaction(txid,function(e,r){
+			web3.eth.getTransaction(txid,function(e,r){
 
 				if(r != null && r.blockNumber > 0){
 					document.getElementById('pending').style.cssText='color:green;';
