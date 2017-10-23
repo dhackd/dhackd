@@ -70,6 +70,7 @@
 		simpleStorageContract = web3.eth.contract(abi);
 		simpleStorage = simpleStorageContract.at(contract_address);
 
+		//2017.10.23 modified
 		document.getElementById('contract_addr').innerHTML = getLink(contract_address);
 
 		web3.eth.getAccounts(function(e,r){
