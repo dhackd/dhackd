@@ -71,12 +71,12 @@
 		simpleStorage = simpleStorageContract.at(contract_address);
 
 		//2017.10.23 modified
-		document.getElementById('contract_addr').innerHTML = getLink(contract_address);
+		document.getElementById('contract_addr').innerHTML = '<a href="https://ropsten.etherscan.io/address/'+addr+'>'+addr+'</a>';
 
 		web3.eth.getAccounts(function(e,r){
 
 			if(r != null){
-				document.getElementById('account_addr').innerHTML = getLink(r[0]);	
+				document.getElementById('account_addr').innerHTML = r[0];
 			}else{
 				document.getElementById('account_addr').innerHTML = 'account is null';	
 			}
@@ -85,13 +85,13 @@
 		getValue();
 	}
 
-	function getLink(addr) {
+	// function getLink(addr) {
 
-		//console.log(addr);
+	// 	//console.log(addr);
 
-		return '<a href="https://ropsten.etherscan.io/address/'+addr+'>'+addr+'</a>';
-		// body...
-	}
+	// 	return '<a href="https://ropsten.etherscan.io/address/'+addr+'>'+addr+'</a>';
+	// 	// body...
+	// }
 
 	function getValue(){
 
