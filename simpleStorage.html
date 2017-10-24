@@ -71,9 +71,9 @@
 		simpleStorage = simpleStorageContract.at(contract_address);
 
 		//2017.10.23 modified
-		document.getElementById('contract_addr').innerHTML = '<a href="https://ropsten.etherscan.io/address/'+contract_address+'>'+contract_address+'</a>';
+		document.getElementById('contract_addr').innerHTML = contract_address;
 
-		web3.eth.getAccounts(function(e,r){
+		simpleStorage.getAccounts(function(e,r){
 
 			if(r != null){
 				document.getElementById('account_addr').innerHTML = r[0];
@@ -101,7 +101,7 @@
 
 		});
 
-		web3.eth.getBlockNumber(function(e,r){
+		simpleStorage.getBlockNumber(function(e,r){
 
 			document.getElementById('lastBlock').innerHTML = r;
 
@@ -126,7 +126,7 @@
 
 			getValue();
 
-			web3.eth.getTransaction(txid,function(e,r){
+			simpleStorage.getTransaction(txid,function(e,r){
 
 				if(r != null && r.blockNumber > 0){
 					document.getElementById('pending').style.cssText='color:green;';
