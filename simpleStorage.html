@@ -24,25 +24,28 @@
 <body>
 <h3> Simple Storage </h3>
 <ul>
-	<li>스마트계약 주소 : <span id="contract_addr"></span></li>
+	<li>스마트계약 주소 : <input type="text" id="contract_addr"><button onclick="startApp()">접속</button></li>
 	<li>마이계정 주소 : <span id="account_addr"></span></li>
-	<li>스마트계약에 저장된 값 : <span id="contract_value"></span>
+	<li>스마트계약에 저장된 값 : <span id="storedData"></span>
 	<button onclick="getValue()">새로고침</button>(현재블록: <span id="lastBlock"></span>)</li>
-	<li><input id="newValue" type="text"><button onclick="setValue()">새로운 값으로 저장</button>
+	<li><input id="newValue" type="text"><button onclick="setValue()">새로운 값으로 저장</button>&nbsp;&nbsp;<button onclick="historyView()">히스토리</button>
 
-	<div id="result"></div></li>
+	<div id="result"></div>
+	<div id="history"></div>
+	<div id="transaction_list"></div></li>
 	<li>새 값을 저장후에 팬딩 트랜잭션이 블록에 포함되면 자동으로 페이지가 업데이트됨.</li>
 </ul>
 </body>
 <script src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
 <script>
 
-	var contract_address = "0x63445a644C3c0E5c0F6136732C6839f99469eDd6";
+	//var contract_address = "0x63445a644C3c0E5c0F6136732C6839f99469eDd6";
 
 	var abi = [{"constant":false,"inputs":[{"name":"x","type":"uint256"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"get","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
 
 	var simpleStorageContract;
 	var simpleStorage;
+	var account;
 
 	window.addEventListener('load',function(){
 	
@@ -50,48 +53,51 @@
 
 		if(typeof web3 !== 'undefined'){
 			//use mist/metamask provider
-			window.web3 = new Web3(Web3.currentProvider);
+			window.web3 = new Web3(web3.currentProvider);
 
 		}else{
 
 			console.log('no web3? you should consider trying metamask!')
 
-			window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			window.web3 = new Web3(new web3.providers.HttpProvider("http://localhost:8545"));
 
 			console.log('window.web3 connect successfully!!');
 		}
 
-		startApp();
+		//startApp();
 
 		});
 
 	function startApp(){
 
 		simpleStorageContract = web3.eth.contract(abi);
-		simpleStorage = simpleStorageContract.at(contract_address);
+		simpleStorage = simpleStorageContract.at(contract_addr.value);
 
 		//2017.10.23 modified
-		document.getElementById('contract_addr').innerHTML = contract_address;
+		//document.getElementById('contract_addr').innerHTML = contract_address;
 
-		simpleStorage.getAccounts(function(e,r){
+		web3.eth.getAccounts(function(e,r){
 
 			if(r != null){
 				document.getElementById('account_addr').innerHTML = r[0];
+				account = r[0];
 			}else{
 				document.getElementById('account_addr').innerHTML = 'account is null';	
 			}
 		});
 
+
+
 		getValue();
 	}
 
-	// function getLink(addr) {
+	function getLink(addr) {
 
-	// 	//console.log(addr);
+		//console.log(addr);
 
-	// 	return '<a href="https://ropsten.etherscan.io/address/'+addr+'>'+addr+'</a>';
-	// 	// body...
-	// }
+		return '<a href="https://ropsten.etherscan.io/address/'+addr+'>'+addr+'</a>';
+		// body...
+	}
 
 	function getValue(){
 
@@ -101,7 +107,7 @@
 
 		});
 
-		simpleStorage.getBlockNumber(function(e,r){
+		web3.eth.getBlockNumber(function(e,r){
 
 			document.getElementById('lastBlock').innerHTML = r;
 
@@ -126,7 +132,7 @@
 
 			getValue();
 
-			simpleStorage.getTransaction(txid,function(e,r){
+			web3.eth.getTransaction(txid,function(e,r){
 
 				if(r != null && r.blockNumber > 0){
 					document.getElementById('pending').style.cssText='color:green;';
@@ -135,6 +141,27 @@
 				}
 			});
 		});
+	}
+
+	function historyView(){
+
+		console.log(account);
+
+		web3.eth.getTransactionCount(account,function(e,r){
+			var number = r;
+
+			document.getElementById('history').innerHTML = '<span id="transaction_count">history count : '+number+'</span>';
+
+			var filter = web3.eth.filter({fromBlock:0,toBlock:'lastest',address:contract_addr.value});
+
+			filter.watch(function(e,r){
+				if(!e){
+					console.log(r);
+				}
+			});
+		});
+
+
 	}
 
 </script>
