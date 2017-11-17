@@ -126,9 +126,9 @@
 			txid = r;
 		});
 
-		var filter = web3.eth.filter('lastest');
+		//var filter = web3.eth.filter('lastest');
 
-		filter.watch(function(e,r){
+		web3.eth.watch('chain').changed(function(e,r){
 
 			getValue();
 
@@ -137,7 +137,7 @@
 				if(r != null && r.blockNumber > 0){
 					document.getElementById('pending').style.cssText='color:green;';
 					document.getElementById('storedData').style.cssText='color:green;font-size:300%;';
-					filter.stopWatching();
+					//web3.eth.stopWatching();
 				}
 			});
 		});
