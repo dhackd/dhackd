@@ -126,9 +126,9 @@
 			txid = r;
 		});
 
-		//var filter = web3.eth.filter('lastest');
+		var filter = web3.eth.filter('lastest');
 
-		web3.eth.watch('chain').changed(function(e,r){
+		web3.eth.filter(function(e,r){
 
 			getValue();
 
